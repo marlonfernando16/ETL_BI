@@ -1,0 +1,125 @@
+CREATE TABLE d_cliente
+(
+  d_cliente_sk integer NOT NULL,
+  d_cliente_cod character varying(5),
+  d_cliente_nome character varying(40),
+  d_cliente_cidade character varying(30),
+  d_cliente_regiao character varying(30),
+  d_cliente_pais character varying(30),
+  d_cliente_telefone character varying(24),
+  d_cliente_fax character varying(24),
+  d_cliente_nome_contato character varying(30),
+  d_cliente_date_to timestamp,
+  d_cliente_date_from timestamp,
+  version integer,
+  CONSTRAINT d_cliente_pkey PRIMARY KEY (d_cliente_sk)
+);
+
+CREATE TABLE d_produto
+(
+  d_produto_sk integer NOT NULL,
+  d_cod_produto integer,
+  d_produto_nome character varying(45),
+  d_produto_categoria character varying(15),
+  d_produto_fornecedor character varying(45),
+  d_produto_prec_unitario character varying(45),
+  d_produto_unidades_estoque integer,
+  d_produto_unidades_pedido integer,
+  d_produto_nivel_reposicao integer,
+  d_produto_descontinuado character varying(15),
+  d_produto_date_to timestamp,
+  d_produto_date_from timestamp,
+  version integer,
+  CONSTRAINT d_produto_pkey PRIMARY KEY (d_produto_sk)
+);
+
+CREATE TABLE d_tempo
+(
+  d_tempo_sk integer NOT NULL,
+  d_tempo_data date,
+  d_tempo_ano integer,
+  d_tempo_mes integer,
+  d_tempo_dia_semana integer,
+  d_tempo_trimestre integer,
+  d_tempo_date_to timestamp,
+  d_tempo_date_from timestamp,
+  version integer,
+  CONSTRAINT d_tempo_pkey PRIMARY KEY (d_tempo_sk)
+);
+
+CREATE TABLE d_transportadora
+(
+  d_transportadora_sk integer NOT NULL,
+  d_transportadora_cod integer,
+  d_transportadora_nome character varying(45),
+  d_transportadora_date_to timestamp,
+  d_transportadora_date_from timestamp,
+  version integer,
+  CONSTRAINT d_transportadora_pkey PRIMARY KEY (d_transportadora_sk)
+);
+
+CREATE TABLE d_vendedor
+(
+  d_vendedor_sk integer NOT NULL,
+  d_vendedor_cod integer,
+  d_vendedor_nome character varying(45),
+  d_vendedor_supervisor character varying(45),
+  d_vendedor_date_to timestamp,
+  d_vendedor_date_from timestamp,
+  version integer,
+  CONSTRAINT d_vendedor_pkey PRIMARY KEY (d_vendedor_sk)
+);
+
+CREATE TABLE f_pedido
+(
+  f_pedido_sk_cli integer,
+  f_pedido_sk_prod integer,
+  f_pedido_sk_vend integer,
+  f_pedido_sk_transp integer,
+  f_pedido_sk_tempo integer,
+  f_pedido_numero integer,
+  f_pedido_frete double precision,
+  f_pedido_valor_brut double precision,
+  f_pedido_valor_liq double precision,
+  f_pedido_desconto double precision,
+  f_pedido_preco_unit double precision,
+  f_pedido_qtd_prod integer,
+  f_pedido_dias_entrega integer,
+  f_pedido_dias_envio integer,
+  CONSTRAINT f_ped_client_sk FOREIGN KEY (f_pedido_sk_cli)
+      REFERENCES d_cliente (d_cliente_sk) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT f_ped_data_sk FOREIGN KEY (f_pedido_sk_tempo)
+      REFERENCES d_tempo (
+d_tempo_sk) MATCH SIMPLE	
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT f_ped_prod_sk FOREIGN KEY (f_pedido_sk_prod)
+      REFERENCES d_produto (d_produto_sk) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT f_ped_trans_sk FOREIGN KEY (f_pedido_sk_transp)
+      REFERENCES d_transportadora (d_transportadora_sk) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT f_ped_vend_sk FOREIGN KEY (f_pedido_sk_vend)
+      REFERENCES d_vendedor (d_vendedor_sk) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE SEQUENCE d_cliente_sk 
+START WITH 1 
+INCREMENT BY 1 ;
+
+CREATE SEQUENCE d_produto_sk 
+START WITH 1 
+INCREMENT BY 1;
+CREATE SEQUENCE d_tempo_sk
+START WITH 1 
+INCREMENT BY 1;
+
+CREATE SEQUENCE d_transportadora_sk 
+START WITH 1 
+INCREMENT BY 1;
+CREATE SEQUENCE d_vendedor_sk 
+START WITH 1 
+INCREMENT BY 1;
+
+
